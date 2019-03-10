@@ -21,8 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable($value = true); 
-            $table->unsignedInteger('id_role')->default(2);
-            $table->foreign('id_role')->references('id')->on('roles');
+            $table->unsignedInteger('role_id')->default(2);
+            $table->foreign('role_id')->references('id')->on('roles');
         }); 
     }
     

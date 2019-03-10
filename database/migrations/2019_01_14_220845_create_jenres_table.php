@@ -16,8 +16,8 @@ class CreateJenresTable extends Migration
         Schema::create('jenres', function (Blueprint $table) {
             $table->tinyIncrements('id');
             $table->string('name', 100);
-            $table->unsignedTinyInteger('id_jenre_group');
-            $table->foreign('id_jenre_group')->references('id')->on('jenres_group');
+            $table->unsignedTinyInteger('jenre_group_id');
+            $table->foreign('jenre_group_id')->references('id')->on('jenres_group');
         });
     }
 

@@ -17,8 +17,8 @@ class CreateCitiesTable extends Migration
             $table->smallIncrements('id');
             $table->string('name_en', 100);
             $table->string('name_ru', 100);
-            $table->unsignedSmallInteger('id_country');
-            $table->foreign('id_country')->references('id')->on('countries');
+            $table->unsignedSmallInteger('country_id');
+            $table->foreign('country_id')->references('id')->on('countries');
         });
     }
 

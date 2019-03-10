@@ -14,10 +14,10 @@ class CreateJenresRadioIntermediateTable extends Migration
     public function up()
     {
         Schema::create('jenres_radio_intermediate', function (Blueprint $table) {
-            $table->unsignedInteger('id_station');
-            $table->foreign('id_station')->references('id')->on('radio_stations');            
-            $table->unsignedTinyInteger('id_jenre');
-            $table->foreign('id_jenre')->references('id')->on('jenres');
+            $table->unsignedInteger('station_id');
+            $table->foreign('station_id')->references('id')->on('radio_stations');
+            $table->unsignedTinyInteger('jenre_id');
+            $table->foreign('jenre_id')->references('id')->on('jenres');
         });
     }
 

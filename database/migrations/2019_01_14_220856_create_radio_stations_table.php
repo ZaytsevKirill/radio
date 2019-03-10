@@ -19,8 +19,8 @@ class CreateRadioStationsTable extends Migration
             $table->unsignedMediumInteger('rating');
             $table->string('url', 255);
             $table->string('logo', 50);
-            $table->unsignedSmallInteger('id_city');
-            $table->foreign('id_city')->references('id')->on('cities');
+            $table->unsignedSmallInteger('city_id');
+            $table->foreign('city_id')->references('id')->on('cities');
         });
     }
 
