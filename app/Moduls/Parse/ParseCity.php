@@ -13,6 +13,7 @@
 namespace App\Moduls\Parse;
 
 use Symfony\Component\DomCrawler\Crawler;
+use App\Models\City;
 
 class ParseCity extends PageForParse
 {
@@ -41,7 +42,7 @@ class ParseCity extends PageForParse
 
     // Get city information
 
-    public function parseAllCitiesInfo()
+    public function parseAllCitiesInfoToDB()
     {
         $urlCountries = $this->urlCountries;
 
@@ -58,6 +59,16 @@ class ParseCity extends PageForParse
             }
         }
         unset($value);
+
+        foreach ($countryInfo as $value) {
+            $cities = new City;
+
+            $cities->name_en = $value["url_eng"]['name_en'];
+            $cities->name_ru = $value["url_ru"]['name_ru'];
+            $cities->country_id = ;
+
+            $cities->save();
+        }
 
         return $urlCountries;
     }
