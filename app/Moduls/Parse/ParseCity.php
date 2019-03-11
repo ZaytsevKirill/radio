@@ -13,7 +13,9 @@
 namespace App\Moduls\Parse;
 
 use Symfony\Component\DomCrawler\Crawler;
+
 use App\Models\City;
+use App\Models\Country;
 
 class ParseCity extends PageForParse
 {
@@ -23,53 +25,73 @@ class ParseCity extends PageForParse
     ];
 
     private $urlCountries = [];
-
-    // Get URL country pages
+    private $NameCountries = [];
 
     public function __construct()
     {
+        // Get names of countries
+
+        $this->NameCountries = (new Country())->select('name_en', 'id')->get();
+
+        // Get URL country pages
+
         $arrCountry = new ParseCountry();
         $this->urlCountries = $arrCountry->countryPageRu->filter('div.countries > div > ul > li > a')->each(function (Crawler $node) {
             $url = $node->attr('href');
             $arrUrl = [
-                'url_eng' => self::URL_MAIN_PAGE['eng'] . $url,
-                'url_ru' => self::URL_MAIN_PAGE['ru'] . $url,
+                'eng' => self::URL_MAIN_PAGE['eng'] . $url,
+                'ru' => self::URL_MAIN_PAGE['ru'] . $url,
             ];
 
             return $arrUrl;
         });
     }
 
-    // Get city information
-
     public function parseAllCitiesInfoToDB()
     {
         $urlCountries = $this->urlCountries;
+        $NameCountries = $this->NameCountries;
 
-        foreach ($urlCountries as &$value) {
-            foreach ($value as $key => $url) {
+        $cityInfo = [];
 
-                $countryPage = $this->getPage($url);
-                $countryName = trim($countryPage->filter('div.path > span')->last()->text());
-                $cityArr = $countryPage->filter('div.cityes > ul > li > a')->each(function (Crawler $node) {
-                    return trim($node->text());
-                });
+        // Get city information
 
-                $value[$key] = [$countryName => $cityArr];
+        foreach ($urlCountries as $value) {
+
+            $countryPageEn = $this->getPage($value['eng']);
+            $countryPageRu = $this->getPage($value['ru']);
+
+            $countryName = trim($countryPageEn->filter('div.path > span')->last()->text());
+            $countryID = null;
+
+            foreach ($NameCountries as $country) {
+                if ($country->name_en === $countryName) {
+                    $countryID = $country->id;
+                    break;
+                }
+            }
+
+            $cityArrEn = $countryPageEn->filter('div.cityes > ul > li > a')->each(function (Crawler $node) {
+                return trim($node->text());
+            });
+            $cityArrRu = $countryPageRu->filter('div.cityes > ul > li > a')->each(function (Crawler $node) {
+                return trim($node->text());
+            });
+
+            for ($i = 0; $i <= (count($cityArrRu) - 1); $i++) {
+                $cityInfo[] = [
+                    'name_en' => $cityArrEn[$i],
+                    'name_ru' => $cityArrRu[$i],
+                    'country_id' => $countryID,
+                ];
             }
         }
-        unset($value);
 
-        foreach ($countryInfo as $value) {
-            $cities = new City;
+        // Save to DB
 
-            $cities->name_en = $value["url_eng"]['name_en'];
-            $cities->name_ru = $value["url_ru"]['name_ru'];
-            $cities->country_id = ;
+        $city = new City;
+        $city->insert($cityInfo);
 
-            $cities->save();
-        }
-
-        return $urlCountries;
+        return $cityInfo;
     }
 }

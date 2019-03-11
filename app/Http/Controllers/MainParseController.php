@@ -14,10 +14,10 @@ class MainParseController extends Controller
     public function show()
     {
         $country = (new ParseCountry())->parseAllCountriesInfoToDB();
-//        $city = (new ParseCity())->parseAllCitiesInfoToDB();
+        $city = (new ParseCity())->parseAllCitiesInfoToDB();
 //        $jenre = (new ParseJenre())->parseAllJenresInfo();
 //        $radiostation = (new ParseRadioPage())->parseAllRadioInfo();
 
-        dd($country);
+        dd($city);
     }
 }

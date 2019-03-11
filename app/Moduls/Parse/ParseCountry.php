@@ -13,6 +13,7 @@
 namespace App\Moduls\Parse;
 
 use Symfony\Component\DomCrawler\Crawler;
+
 use App\Models\Country;
 
 class ParseCountry extends PageForParse
@@ -83,10 +84,10 @@ class ParseCountry extends PageForParse
         }
     }
 
-    // Get all data of countries
-
     public function parseAllCountriesInfoToDB()
     {
+        // Get all data of countries
+
         $countryInfoEng = $this->parseEngCountryInfo();
         $countryInfoRu = $this->parseRuCountryInfo();
         $this->getImages($countryInfoEng);
@@ -105,10 +106,11 @@ class ParseCountry extends PageForParse
             }
         }
 
+        // Save to DB
+
         $countries = new Country;
         $countries->insert($countryInfo);
 
-
-        return $countryInfo;
+//        return $countryInfo;
     }
 }
